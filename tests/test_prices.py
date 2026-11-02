@@ -1,6 +1,7 @@
 import os
 
 import pandas as pd
+import pytest
 
 from backtest import prices
 from helpers import series
@@ -73,3 +74,45 @@ def test_store_uses_stale_cache_when_sources_fail(tmp_path):
     os.utime(tmp_path / "AAA.csv", (0, 0))  # make the cache file ancient
     store = prices.PriceStore(str(tmp_path), fetchers=[lambda s, d: None])
     assert list(store.get("AAA").values) == [7.0]
+
+
+def test_store_logs_source_failures_and_no_prices(tmp_path):
+    msgs = []
+
+    def none_fn(symbol, start):
+        return None
+
+    def none_fn2(symbol, start):
+        return None
+
+    store = prices.PriceStore(str(tmp_path), fetchers=[none_fn, none_fn2], log=msgs.append)
+    assert store.get("ZZZZ") is None
+    assert "prices ZZZZ: none_fn returned no data" in msgs
+    assert "prices ZZZZ: none_fn2 returned no data" in msgs
+    assert "prices ZZZZ: no prices" in msgs
+
+
+def test_store_logs_stale_cache_use(tmp_path):
+    prices.PriceStore(str(tmp_path), fetchers=[lambda s, d: series("2020-01-01", [7])]).get("AAA")
+    os.utime(tmp_path / "AAA.csv", (0, 0))
+    msgs = []
+    store = prices.PriceStore(str(tmp_path), fetchers=[lambda s, d: None], log=msgs.append)
+    assert store.get("AAA") is not None
+    assert "prices AAA: sources failed, using stale cache" in msgs
+
+
+@pytest.mark.parametrize("content", ["", "date,foo\n2020-01-01,1\n"])
+def test_corrupt_cache_is_a_miss(tmp_path, content):
+    (tmp_path / "BAD.csv").write_text(content)
+    assert prices.PriceStore(str(tmp_path), fetchers=[]).get("BAD") is None
+    good = series("2020-01-01", [1, 2])
+    s = prices.PriceStore(str(tmp_path), fetchers=[lambda s, d: good]).get("BAD")
+    assert list(s.values) == [1.0, 2.0]
+
+
+def test_parse_yahoo_malformed_payloads():
+    def payload(ts, closes):
+        return {"chart": {"result": [{"timestamp": ts, "indicators": {"quote": [{"close": closes}]}}]}}
+    assert prices.parse_yahoo(payload(None, [1.0])) is None
+    assert prices.parse_yahoo(payload(5, [1.0])) is None
+    assert prices.parse_yahoo(payload([1577836800, 1577923200], [1.0])) is None
