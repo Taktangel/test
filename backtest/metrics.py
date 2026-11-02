@@ -65,7 +65,8 @@ def daily_equity(trades, store, calendar):
     for row in t.itertuples():
         if row.ticker not in daily:
             s = store.get(row.ticker)
-            daily[row.ticker] = (s.reindex(cal).ffill().pct_change(fill_method=None)
+            daily[row.ticker] = (s.reindex(s.index.union(cal)).ffill().reindex(cal)
+                                 .pct_change(fill_method=None)
                                  .fillna(0.0).to_numpy())
         i0 = cal.searchsorted(pd.Timestamp(row.entry_date), side="right")
         i1 = cal.searchsorted(pd.Timestamp(row.exit_date), side="right")
