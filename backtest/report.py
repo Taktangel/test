@@ -8,7 +8,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
-import pandas as pd  # noqa: E402
 
 CAVEATS = [
     "Не финансовый совет. Это проверка правил на прошлых данных, а не прогноз.",
@@ -86,7 +85,7 @@ def write_report(out_dir, trades, overall, by_source, books, curves, errors, gen
     top = overall.merge(books, on=["strategy", "variant"], how="left")
     md = ["# Бэктест: Copycat 13F и сделки Конгресса", "",
           "Обновлено: %s" % generated, ""]
-    md += ["> %s" % c for c in CAVEATS]
+    md += ["> - %s" % c for c in CAVEATS]
     md += ["", "## Итог по стратегиям", "", md_table(top.rename(columns=NAMES))]
     if curves:
         md += ["![Кривая капитала](equity.png)", ""]
