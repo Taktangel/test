@@ -36,13 +36,15 @@ class CachedFetcher(e13.Fetcher):
                 data = super().get(url, sec=sec)
                 break
             except e13.EdgarError:
-                if self.offline or attempt == 2:
+                if self.offline or attempt == 2 or (sec and not self.ua):
                     raise
                 time.sleep(2 * (attempt + 1))
         if path:
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open(path, "wb") as fh:
+            tmp = path + ".tmp"
+            with open(tmp, "wb") as fh:
                 fh.write(data)
+            os.replace(tmp, path)
         return data
 
 
