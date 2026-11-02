@@ -1,5 +1,6 @@
 """House PTRs of chosen members -> one row per stock transaction."""
 import os
+import zipfile
 
 import pandas as pd
 
@@ -7,6 +8,7 @@ from vendor import ptr
 
 COLUMNS = ["member", "doc_id", "filed", "txn_date", "ticker", "side", "amount_low",
            "amount_high", "owner"]
+ERRORS = (ptr.PtrError, zipfile.BadZipFile, ValueError, OSError)
 SIDES = {"P": "buy", "S": "sell", "S (partial)": "sell"}
 
 
@@ -45,12 +47,24 @@ def trades_from_report(report, member, doc_id, filed):
     return out
 
 
+def _download_index(year, path):
+    data = ptr.download(ptr.INDEX_URL % (year, "FD"))
+    rows = ptr.parse_index(ptr.read_index_bytes(data), year)  # validate before caching
+    if not rows:
+        raise ptr.PtrError("index %d came back empty or not an index" % year)
+    _write_atomic(path, data, binary=True)
+    return rows
+
+
 def load_index_cached(year, cache_dir, this_year):
     path = os.path.join(cache_dir, "%dFD.zip" % year)
     if year >= this_year or not os.path.isfile(path):
-        data = ptr.download(ptr.INDEX_URL % (year, "FD"))
-        _write_atomic(path, data, binary=True)
-    return ptr.load_index(year, offline=path)
+        return _download_index(year, path)
+    try:
+        return ptr.load_index(year, offline=path)
+    except (ptr.PtrError, zipfile.BadZipFile):
+        os.remove(path)  # corrupt cache: fetch it again once
+        return _download_index(year, path)
 
 
 def read_filing(row, cache_dir):
@@ -77,15 +91,15 @@ def build_trades(members, start_year, this_year, cache_dir, log=print):
     for year in range(start_year, this_year + 1):
         try:
             rows = load_index_cached(year, cache_dir, this_year)
-        except ptr.PtrError as exc:
-            log("PTR index %d: %s" % (year, exc))
+        except ERRORS as exc:
+            log("PTR index %d: %s: %s" % (year, type(exc).__name__, exc))
             continue
         for r in ptr.select(rows, members=members, kind="P"):
             member = match_member(r, members)
             try:
                 report = read_filing(r, cache_dir)
-            except ptr.PtrError as exc:
-                log("PTR %s %s: %s" % (member, r["doc_id"], exc))
+            except ERRORS as exc:
+                log("PTR %s %s: %s: %s" % (member, r["doc_id"], type(exc).__name__, exc))
                 continue
             if report is None:
                 log("PTR %s %s: no text (scanned PDF or pdftotext missing)" % (member, r["doc_id"]))

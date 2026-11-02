@@ -1,6 +1,8 @@
 import os
 import shutil
 
+import pytest
+
 from backtest import fetch_ptr
 from vendor import ptr
 
@@ -44,7 +46,10 @@ def test_read_filing_uses_cached_text(tmp_path):
     assert report["rows"]
 
 
-def test_load_index_cached_reads_past_year_from_disk(tmp_path):
+def test_load_index_cached_reads_past_year_from_disk(tmp_path, monkeypatch):
+    def no_net(url):
+        raise AssertionError("network used")
+    monkeypatch.setattr(ptr, "download", no_net)
     shutil.copy(os.path.join(FIX, "2026FD.zip"), tmp_path / "2026FD.zip")
     rows = fetch_ptr.load_index_cached(2026, str(tmp_path), this_year=2027)
     assert rows
@@ -105,3 +110,41 @@ def test_load_index_cached_download_leaves_no_tmp(tmp_path, monkeypatch):
     rows = fetch_ptr.load_index_cached(2026, str(tmp_path / "c"), this_year=2026)
     assert rows
     assert os.listdir(tmp_path / "c") == ["2026FD.zip"]
+
+
+def _fixture_zip_bytes():
+    with open(os.path.join(FIX, "2026FD.zip"), "rb") as fh:
+        return fh.read()
+
+
+def test_load_index_cached_heals_corrupt_cache(tmp_path, monkeypatch):
+    good = _fixture_zip_bytes()
+    (tmp_path / "2026FD.zip").write_bytes(good[:50])  # truncated zip
+    monkeypatch.setattr(ptr, "download", lambda url: good)
+    rows = fetch_ptr.load_index_cached(2026, str(tmp_path), this_year=2027)
+    assert rows
+    assert (tmp_path / "2026FD.zip").read_bytes() == good
+
+
+def test_load_index_cached_rejects_html_download(tmp_path, monkeypatch):
+    monkeypatch.setattr(ptr, "download", lambda url: b"<html>blocked</html>")
+    with pytest.raises(ptr.PtrError):
+        fetch_ptr.load_index_cached(2026, str(tmp_path), this_year=2026)
+    assert os.listdir(tmp_path) == []
+
+
+def test_build_trades_skips_value_error_filing(tmp_path, monkeypatch):
+    rows = [{"doc_id": d, "type": "P", "last": "Pelosi", "first": "Nancy",
+             "name": "n", "filed": "2026-02-01", "url": "u"} for d in ("1", "2")]
+    monkeypatch.setattr(fetch_ptr, "load_index_cached", lambda y, c, t: rows)
+
+    def read(row, cache_dir):
+        if row["doc_id"] == "1":
+            raise ValueError("bad date")
+        return {"rows": [{"type": "S", "ticker": "AAA", "asset_type": "ST"}]}
+
+    monkeypatch.setattr(fetch_ptr, "read_filing", read)
+    logs = []
+    df = fetch_ptr.build_trades(["Pelosi"], 2026, 2026, str(tmp_path), log=logs.append)
+    assert list(df["doc_id"]) == ["2"]
+    assert any("ValueError" in m for m in logs)
