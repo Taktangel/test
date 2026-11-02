@@ -210,3 +210,188 @@ def test_cached_fetcher_failed_write_leaves_no_final_file(tmp_path, monkeypatch)
     with pytest.raises(OSError):
         f.get(ARCH)
     assert not (tmp_path / "1" / "000000000126000001" / "index.json").exists()
+
+
+# ---- final review fixes: items 1-3 ----
+
+import gzip  # noqa: E402
+import http.client  # noqa: E402
+import json  # noqa: E402
+import xml.etree.ElementTree as ET  # noqa: E402
+
+from backtest import run  # noqa: E402
+
+
+@pytest.mark.parametrize("exc", [OSError("reset"), http.client.IncompleteRead(b"x"),
+                                 gzip.BadGzipFile("bad"), EOFError("eof")])
+def test_cached_fetcher_converts_low_level_errors(tmp_path, monkeypatch, exc):
+    calls = []
+
+    def boom(self, url, sec=True):
+        calls.append(url)
+        raise exc
+
+    monkeypatch.setattr(e13.Fetcher, "get", boom)
+    monkeypatch.setattr(fetch_13f.time, "sleep", lambda s: None)
+    f = fetch_13f.CachedFetcher(str(tmp_path), ua="Test test@example.com")
+    with pytest.raises(e13.EdgarError):
+        f.get(ARCH)
+    assert len(calls) == 3
+
+
+def test_cached_fetcher_retries_low_level_error_then_succeeds(tmp_path, monkeypatch):
+    calls = []
+
+    def flaky(self, url, sec=True):
+        calls.append(url)
+        if len(calls) == 1:
+            raise http.client.IncompleteRead(b"x")
+        return b"ok"
+
+    monkeypatch.setattr(e13.Fetcher, "get", flaky)
+    monkeypatch.setattr(fetch_13f.time, "sleep", lambda s: None)
+    f = fetch_13f.CachedFetcher(str(tmp_path), ua="Test test@example.com")
+    assert f.get(ARCH) == b"ok"
+
+
+@pytest.mark.parametrize("exc", [ValueError("v"), KeyError("k"), TypeError("t"),
+                                 ET.ParseError("p")])
+def test_build_events_skips_parse_errors(monkeypatch, exc):
+    fetcher = MultiStub(_recent([("A-bad", "2026-02-10", "2025-12-31", "13F-HR"),
+                                 ("A-ok", "2026-05-15", "2026-03-31", "13F-HR")]))
+
+    def fake_top(fetcher, cik, filing, *a, **k):
+        if filing["accession"] == "A-bad":
+            raise exc
+        return [{"rank": 1, "ticker": "X", "issuer": "X", "weight_fund": 1.0,
+                 "weight_equal": 1.0}]
+
+    monkeypatch.setattr(fetch_13f, "top_positions", fake_top)
+    logs = []
+    ev = fetch_13f.build_events(fetcher, [FUND], "2026-01-01", 5, {}, {}, log=logs.append)
+    assert list(ev["accession"]) == ["A-ok"]
+    assert len(logs) == 1 and type(exc).__name__ in logs[0] and "A-bad" in logs[0]
+
+
+def test_build_events_skips_fund_when_filings_unparsable(monkeypatch):
+    def bad(fetcher, cik, *a):
+        raise KeyError("filings")
+
+    monkeypatch.setattr(fetch_13f, "all_filings", bad)
+    logs = []
+    ev = fetch_13f.build_events(MultiStub({}), [FUND], "2026-01-01", 5, {}, {}, log=logs.append)
+    assert ev.empty and len(logs) == 1 and "KeyError" in logs[0]
+
+
+def _top_setup(monkeypatch, positions):
+    monkeypatch.setattr(e13, "info_table_name", lambda idx: "t.xml")
+    monkeypatch.setattr(e13, "parse_info_table", lambda data, multiplier=1: [])
+    monkeypatch.setattr(e13, "build", lambda *a, **k: (positions, 100))
+
+
+class _F:
+    def get_json(self, url, sec=True):
+        return {}
+
+    def get(self, url, sec=True):
+        return b""
+
+
+FILING = {"accession": "0000000001-26-000001", "filed": "2026-02-10"}
+
+
+def test_top_positions_figi_failure_keeps_filing(monkeypatch):
+    _top_setup(monkeypatch, [_pos("AAA", "A CO", 50), _pos("", "B CO", 30)])
+
+    def boom(*a, **k):
+        raise e13.EdgarError("figi down")
+
+    monkeypatch.setattr(e13, "figi_lookup", boom)
+    logs = []
+    got = fetch_13f.top_positions(_F(), "1", FILING, {}, {}, 2, figi_key="k", log=logs.append)
+    assert [g["ticker"] for g in got] == ["AAA", ""]
+    assert len(logs) == 1 and "figi" in logs[0].lower()
+
+
+def test_top_positions_figi_cache_and_pause(tmp_path, monkeypatch):
+    cache = str(tmp_path / "figi.json")
+    with open(cache, "w") as fh:
+        json.dump({"B CO": "BBB"}, fh)
+    _top_setup(monkeypatch, [_pos("AAA", "A CO", 50), _pos("", "B CO", 30), _pos("", "C CO", 20)])
+    asked = []
+
+    def fake(fetcher, cusips, api_key=None, batch=None, pause=2.5):
+        asked.append((list(cusips), pause))
+        return {"C CO": "CCC"}
+
+    monkeypatch.setattr(e13, "figi_lookup", fake)
+    got = fetch_13f.top_positions(_F(), "1", FILING, {}, {}, 3, figi_key="k", figi_cache=cache)
+    assert [g["ticker"] for g in got] == ["AAA", "BBB", "CCC"]
+    assert asked[0][0] == ["C CO"] and asked[0][1] >= 0.25
+    with open(cache) as fh:
+        assert json.load(fh) == {"B CO": "BBB", "C CO": "CCC"}
+    assert [p.name for p in tmp_path.iterdir()] == ["figi.json"]  # no tmp left
+    # second call: everything cached, no lookup
+    _top_setup(monkeypatch, [_pos("AAA", "A CO", 50), _pos("", "B CO", 30), _pos("", "C CO", 20)])
+    asked.clear()
+    got = fetch_13f.top_positions(_F(), "1", FILING, {}, {}, 3, figi_key="k", figi_cache=cache)
+    assert asked == [] and [g["ticker"] for g in got] == ["AAA", "BBB", "CCC"]
+
+
+def _cached(tmp_path):
+    f = fetch_13f.CachedFetcher(str(tmp_path / "sec"), ua="Test test@example.com")
+    return f
+
+
+def test_all_filings_caches_submissions_and_falls_back(tmp_path, monkeypatch):
+    f = _cached(tmp_path)
+    main_url = e13.SUBMISSIONS % "0000000001"
+    extra_url = fetch_13f.SUBMISSIONS_FILE % "CIK0000000001-submissions-001.json"
+    pages = {main_url: {"filings": {"recent": _page("A-2", "2020-05-15", "2020-03-31"),
+                                    "files": [{"name": "CIK0000000001-submissions-001.json"}]}},
+             extra_url: _page("A-1", "2014-05-15", "2014-03-31")}
+    monkeypatch.setattr(f, "get_json", lambda url, sec=True: pages[url])
+    first = fetch_13f.all_filings(f, "1")
+    assert (tmp_path / "sec" / "submissions").is_dir()
+
+    def down(url, sec=True):
+        raise e13.EdgarError("down")
+
+    monkeypatch.setattr(f, "get_json", down)
+    logs = []
+    second = fetch_13f.all_filings(f, "1", log=logs.append)
+    assert second == first and len(logs) == 2
+
+
+def test_all_filings_no_cache_no_network_raises(tmp_path, monkeypatch):
+    f = _cached(tmp_path)
+
+    def down(url, sec=True):
+        raise e13.EdgarError("down")
+
+    monkeypatch.setattr(f, "get_json", down)
+    with pytest.raises(e13.EdgarError):
+        fetch_13f.all_filings(f, "1", log=lambda m: None)
+
+
+def test_load_ticker_index_caches_and_falls_back(tmp_path, monkeypatch):
+    data = {"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple Inc."}}
+
+    class F:
+        fail = False
+
+        def get_json(self, url, sec=True):
+            if self.fail:
+                raise e13.EdgarError("down")
+            return data
+
+    f = F()
+    logs = []
+    idx = run.load_ticker_index(f, str(tmp_path), logs.append)
+    assert idx is not None and (tmp_path / "sec" / "company_tickers.json").is_file()
+    f.fail = True
+    idx2 = run.load_ticker_index(f, str(tmp_path), logs.append)
+    assert idx2 is not None and len(logs) == 1
+    (tmp_path / "sec" / "company_tickers.json").unlink()
+    assert run.load_ticker_index(f, str(tmp_path), logs.append) is None
+    assert len(logs) == 3

@@ -36,15 +36,35 @@ def run_backtest(events, ptr_trades, store, cfg):
     return trades, overall, by_source, books, curves
 
 
+def load_ticker_index(fetcher, data_dir, log):
+    """SEC company_tickers.json, cached; None (overrides/FIGI only) if neither fetch nor cache works."""
+    path = os.path.join(data_dir, "sec", "company_tickers.json")
+    try:
+        data = fetcher.get_json(e13.TICKERS_URL)
+        fetch_13f._write_json_atomic(path, data)
+        return e13.ticker_index(fetcher, path=path)
+    except (e13.EdgarError, OSError, ValueError, KeyError, TypeError) as exc:
+        log("SEC ticker list: %s: %s" % (type(exc).__name__, exc))
+    if os.path.isfile(path):
+        try:
+            return e13.ticker_index(fetcher, path=path)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            log("SEC ticker list: saved copy unusable: %s" % exc)
+    else:
+        log("SEC ticker list: no saved copy, tickers come from overrides and OpenFIGI only")
+    return None
+
+
 def fetch_all(cfg, data_dir, log):
     ua = e13.user_agent(None, config_path=None)
     if not ua:
         raise SystemExit("Set SEC_USER_AGENT to 'Your Name you@example.com' (SEC requires it).")
     fetcher = fetch_13f.CachedFetcher(os.path.join(data_dir, "sec"), ua=ua, pause=0.12)
-    index = e13.ticker_index(fetcher)
+    index = load_ticker_index(fetcher, data_dir, log)
     overrides = e13.load_overrides([e13.CLASSES])
     events = fetch_13f.build_events(fetcher, e13.load_filers(), cfg["start"], cfg["top_n"],
-                                    index, overrides, os.environ.get("OPENFIGI_API_KEY"), log)
+                                    index, overrides, os.environ.get("OPENFIGI_API_KEY"), log,
+                                    os.path.join(data_dir, "figi.json"))
     ptr_trades = fetch_ptr.build_trades(load_json("members.json")["members"],
                                         int(cfg["start"][:4]), dt.date.today().year,
                                         os.path.join(data_dir, "ptr"), log)
