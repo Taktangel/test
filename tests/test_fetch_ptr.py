@@ -76,7 +76,7 @@ def test_trades_from_report_skips_exchanges_options_and_no_ticker():
 
 
 def test_build_trades_logs_and_skips(tmp_path, monkeypatch):
-    def idx(year, cache_dir, this_year):
+    def idx(year, cache_dir, this_year, log=None):
         if year == 2025:
             raise ptr.PtrError("index boom")
         return [{"doc_id": d, "type": "P", "last": "Pelosi", "first": "Nancy",
@@ -136,7 +136,7 @@ def test_load_index_cached_rejects_html_download(tmp_path, monkeypatch):
 def test_build_trades_skips_value_error_filing(tmp_path, monkeypatch):
     rows = [{"doc_id": d, "type": "P", "last": "Pelosi", "first": "Nancy",
              "name": "n", "filed": "2026-02-01", "url": "u"} for d in ("1", "2")]
-    monkeypatch.setattr(fetch_ptr, "load_index_cached", lambda y, c, t: rows)
+    monkeypatch.setattr(fetch_ptr, "load_index_cached", lambda y, c, t, log=None: rows)
 
     def read(row, cache_dir):
         if row["doc_id"] == "1":
@@ -148,3 +148,104 @@ def test_build_trades_skips_value_error_filing(tmp_path, monkeypatch):
     df = fetch_ptr.build_trades(["Pelosi"], 2026, 2026, str(tmp_path), log=logs.append)
     assert list(df["doc_id"]) == ["2"]
     assert any("ValueError" in m for m in logs)
+
+
+# ---- final review fixes: items 1, 3, 8 ----
+
+import http.client  # noqa: E402
+
+
+def test_errors_include_http_exception():
+    assert http.client.HTTPException in fetch_ptr.ERRORS
+
+
+def test_download_retries_with_backoff(monkeypatch):
+    calls, sleeps = [], []
+
+    def flaky(url):
+        calls.append(url)
+        if len(calls) < 3:
+            raise ptr.PtrError("transient")
+        return b"data"
+
+    monkeypatch.setattr(ptr, "download", flaky)
+    monkeypatch.setattr(fetch_ptr.time, "sleep", sleeps.append)
+    assert fetch_ptr._download("u") == b"data"
+    assert len(calls) == 3 and sleeps == [2, 4]
+
+
+def test_download_gives_up_after_three(monkeypatch):
+    calls = []
+
+    def down(url):
+        calls.append(url)
+        raise http.client.IncompleteRead(b"")
+
+    monkeypatch.setattr(ptr, "download", down)
+    monkeypatch.setattr(fetch_ptr.time, "sleep", lambda s: None)
+    with pytest.raises(http.client.HTTPException):
+        fetch_ptr._download("u")
+    assert len(calls) == 3
+
+
+def test_current_year_index_falls_back_to_last_good_copy(tmp_path, monkeypatch):
+    good = _fixture_zip_bytes()
+    (tmp_path / "2026FD.zip").write_bytes(good)
+
+    def down(url):
+        raise ptr.PtrError("down")
+
+    monkeypatch.setattr(ptr, "download", down)
+    monkeypatch.setattr(fetch_ptr.time, "sleep", lambda s: None)
+    logs = []
+    rows = fetch_ptr.load_index_cached(2026, str(tmp_path), this_year=2026, log=logs.append)
+    assert rows and len(logs) == 1 and "2026" in logs[0]
+    assert (tmp_path / "2026FD.zip").read_bytes() == good
+
+
+def test_current_year_index_without_copy_still_raises(tmp_path, monkeypatch):
+    monkeypatch.setattr(ptr, "download", lambda url: (_ for _ in ()).throw(ptr.PtrError("x")))
+    monkeypatch.setattr(fetch_ptr.time, "sleep", lambda s: None)
+    with pytest.raises(ptr.PtrError):
+        fetch_ptr.load_index_cached(2026, str(tmp_path), this_year=2026, log=lambda m: None)
+
+
+def test_read_filing_retries_pdf_download(tmp_path, monkeypatch):
+    calls = []
+
+    def flaky(url):
+        calls.append(url)
+        if len(calls) == 1:
+            raise ptr.PtrError("transient")
+        return b"%PDF-1.4 x"
+
+    monkeypatch.setattr(ptr, "download", flaky)
+    monkeypatch.setattr(fetch_ptr.time, "sleep", lambda s: None)
+    monkeypatch.setattr(ptr, "pdf_to_text", lambda path: None)
+    row = {"doc_id": "9", "filed": "2026-01-01", "url": "http://x/9.pdf"}
+    assert fetch_ptr.read_filing(row, str(tmp_path)) is None
+    assert len(calls) == 2
+
+
+def _row(filed):
+    return {"doc_id": "1", "type": "P", "last": "Pelosi", "first": "Nancy",
+            "name": "n", "filed": filed, "url": "u"}
+
+
+def _rep(filed=None):
+    return {"filed": filed, "rows": [{"type": "P", "ticker": "AAA", "asset_type": "ST"}]}
+
+
+def test_build_trades_falls_back_to_report_filed(tmp_path, monkeypatch):
+    monkeypatch.setattr(fetch_ptr, "load_index_cached", lambda y, c, t, log=None: [_row(None)])
+    monkeypatch.setattr(fetch_ptr, "read_filing", lambda r, c: _rep("2026-03-04"))
+    df = fetch_ptr.build_trades(["Pelosi"], 2026, 2026, str(tmp_path), log=lambda m: None)
+    assert list(df["filed"]) == ["2026-03-04"]
+
+
+def test_build_trades_skips_filing_without_any_filed_date(tmp_path, monkeypatch):
+    monkeypatch.setattr(fetch_ptr, "load_index_cached", lambda y, c, t, log=None: [_row("")])
+    monkeypatch.setattr(fetch_ptr, "read_filing", lambda r, c: _rep(None))
+    logs = []
+    df = fetch_ptr.build_trades(["Pelosi"], 2026, 2026, str(tmp_path), log=logs.append)
+    assert df.empty and len(logs) == 1 and "filed" in logs[0]

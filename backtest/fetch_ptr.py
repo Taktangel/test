@@ -1,5 +1,7 @@
 """House PTRs of chosen members -> one row per stock transaction."""
+import http.client
 import os
+import time
 import zipfile
 
 import pandas as pd
@@ -8,7 +10,7 @@ from vendor import ptr
 
 COLUMNS = ["member", "doc_id", "filed", "txn_date", "ticker", "side", "amount_low",
            "amount_high", "owner"]
-ERRORS = (ptr.PtrError, zipfile.BadZipFile, ValueError, OSError)
+ERRORS = (ptr.PtrError, zipfile.BadZipFile, ValueError, OSError, http.client.HTTPException)
 SIDES = {"P": "buy", "S": "sell", "S (partial)": "sell"}
 
 
@@ -47,8 +49,19 @@ def trades_from_report(report, member, doc_id, filed):
     return out
 
 
+def _download(url, tries=3):
+    """ptr.download with a pause (2 s, 4 s) between attempts."""
+    for attempt in range(tries):
+        try:
+            return ptr.download(url)
+        except (ptr.PtrError, OSError, http.client.HTTPException):
+            if attempt == tries - 1:
+                raise
+            time.sleep(2 * 2 ** attempt)
+
+
 def _download_index(year, path):
-    data = ptr.download(ptr.INDEX_URL % (year, "FD"))
+    data = _download(ptr.INDEX_URL % (year, "FD"))
     rows = ptr.parse_index(ptr.read_index_bytes(data), year)  # validate before caching
     if not rows:
         raise ptr.PtrError("index %d came back empty or not an index" % year)
@@ -56,9 +69,18 @@ def _download_index(year, path):
     return rows
 
 
-def load_index_cached(year, cache_dir, this_year):
+def load_index_cached(year, cache_dir, this_year, log=print):
     path = os.path.join(cache_dir, "%dFD.zip" % year)
-    if year >= this_year or not os.path.isfile(path):
+    if year >= this_year:
+        # The current year changes all the time: refresh it, but keep the last good copy.
+        try:
+            return _download_index(year, path)
+        except ERRORS as exc:
+            if not os.path.isfile(path):
+                raise
+            log("PTR index %d: %s: %s; using the saved copy" % (year, type(exc).__name__, exc))
+            return ptr.load_index(year, offline=path)
+    if not os.path.isfile(path):
         return _download_index(year, path)
     try:
         return ptr.load_index(year, offline=path)
@@ -75,7 +97,7 @@ def read_filing(row, cache_dir):
     else:
         pdf_path = os.path.join(cache_dir, "pdf", row["doc_id"] + ".pdf")
         if not os.path.isfile(pdf_path):
-            data = ptr.download(row["url"])
+            data = _download(row["url"])
             if not data.startswith(b"%PDF"):
                 raise ptr.PtrError("doc %s did not come back as a PDF" % row["doc_id"])
             _write_atomic(pdf_path, data, binary=True)
@@ -83,14 +105,14 @@ def read_filing(row, cache_dir):
         if not text or not text.strip():
             return None
         _write_atomic(text_path, text)
-    return ptr.parse_ptr_text(text, filed=row["filed"])
+    return ptr.parse_ptr_text(text, filed=row["filed"] or None)
 
 
 def build_trades(members, start_year, this_year, cache_dir, log=print):
     out = []
     for year in range(start_year, this_year + 1):
         try:
-            rows = load_index_cached(year, cache_dir, this_year)
+            rows = load_index_cached(year, cache_dir, this_year, log)
         except ERRORS as exc:
             log("PTR index %d: %s: %s" % (year, type(exc).__name__, exc))
             continue
@@ -104,5 +126,10 @@ def build_trades(members, start_year, this_year, cache_dir, log=print):
             if report is None:
                 log("PTR %s %s: no text (scanned PDF or pdftotext missing)" % (member, r["doc_id"]))
                 continue
-            out.extend(trades_from_report(report, member, r["doc_id"], r["filed"]))
+            filed = r["filed"] or report.get("filed")
+            if not filed:
+                log("PTR %s %s: no filed date in the index or the report, skipped"
+                    % (member, r["doc_id"]))
+                continue
+            out.extend(trades_from_report(report, member, r["doc_id"], filed))
     return pd.DataFrame(out, columns=COLUMNS)
