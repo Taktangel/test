@@ -116,3 +116,11 @@ def test_parse_yahoo_malformed_payloads():
     assert prices.parse_yahoo(payload(None, [1.0])) is None
     assert prices.parse_yahoo(payload(5, [1.0])) is None
     assert prices.parse_yahoo(payload([1577836800, 1577923200], [1.0])) is None
+
+
+def test_clean_drops_non_positive_prices():
+    from backtest import prices
+    s = pd.Series([1.0, 0.0, -2.0, 3.0], index=pd.date_range("2020-01-01", periods=4))
+    out = prices._clean(s)
+    assert list(out) == [1.0, 3.0]
+    assert prices._clean(pd.Series([0.0, -1.0], index=pd.date_range("2020-01-01", periods=2))) is None

@@ -20,6 +20,7 @@ def yahoo_symbol(ticker):
 
 def _clean(s):
     s = s.dropna()
+    s = s[s > 0]
     s = s[~s.index.duplicated(keep="last")].sort_index()
     return s if not s.empty else None
 

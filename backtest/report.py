@@ -4,6 +4,7 @@ import math
 import os
 
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
@@ -17,6 +18,7 @@ CAVEATS = [
     "Ошибка выжившего: по делистингованным тикерам цен часто нет, такие сделки в колонке «Без цены».",
     "Сделки в статусе «Открыто» оценены по последней цене и в доли выигрышных не входят.",
     "Copycat: вес позиций без цены делится между остальными позициями периода, а не держится в кэше.",
+    "Конгресс: свободные деньги лежат в кэше под 0 %, поэтому CAGR занижен относительно всегда вложенного SPY.",
 ]
 NAMES = {
     "strategy": "Стратегия", "variant": "Вариант", "source": "Источник",
@@ -46,6 +48,7 @@ def md_table(df):
 
 
 def _records(df):
+    df = df.replace([np.inf, -np.inf], np.nan)
     return df.astype(object).where(df.notna(), None).to_dict("records")
 
 

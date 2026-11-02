@@ -42,3 +42,18 @@ def test_write_report(tmp_path):
     assert (tmp_path / "trades.csv").is_file()
     assert (tmp_path / "equity.png").stat().st_size > 0
     assert (tmp_path / "errors.log").read_text(encoding="utf-8").strip() == "PTR x: no text"
+
+
+def test_records_map_inf_to_none_and_summary_is_valid_json(tmp_path):
+    trades, overall, by_source, books, curves = _frames()
+    overall = overall.assign(mean_ret_pct=np.inf, mean_excess_pct=-np.inf)
+    report.write_report(str(tmp_path), trades, overall, by_source, books, curves, [], "t")
+    text = (tmp_path / "summary.json").read_text(encoding="utf-8")
+    assert "Infinity" not in text
+    rec = json.loads(text)["overall"][0]
+    assert rec["mean_ret_pct"] is None and rec["mean_excess_pct"] is None
+
+
+def test_caveat_about_idle_cash_in_congress():
+    assert ("Конгресс: свободные деньги лежат в кэше под 0 %, поэтому CAGR занижен "
+            "относительно всегда вложенного SPY.") in report.CAVEATS

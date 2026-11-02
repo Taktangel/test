@@ -2,6 +2,7 @@
 close strictly after the day the signal became public."""
 import pandas as pd
 
+LIVE_LAG_DAYS = 7  # a series whose last bar is this close to market_end is still trading
 TRADE_COLUMNS = ["strategy", "variant", "source", "ticker", "signal_date", "entry_date",
                  "entry_px", "exit_date", "exit_px", "weight", "status", "note"]
 
@@ -26,9 +27,10 @@ def price_trade(series, signal_date, exit_rule, market_end):
     if series is None or len(series) == 0:
         return out
     last_ts, last_px = series.index[-1], float(series.iloc[-1])
+    live = last_ts >= market_end - pd.Timedelta(days=LIVE_LAG_DAYS)
     entry = first_after(series, signal_date)
     if entry is None:
-        if last_ts >= market_end:
+        if live:
             out["status"] = "pending"
         return out
     out["entry_date"], out["entry_px"] = _iso(entry[0]), entry[1]
@@ -37,7 +39,7 @@ def price_trade(series, signal_date, exit_rule, market_end):
     exit_ = finder(series, target)
     if exit_ is None:
         out["exit_date"], out["exit_px"] = _iso(last_ts), last_px
-        if last_ts >= market_end:
+        if live:
             out["status"] = "open"
         else:
             out["status"], out["note"] = "ok", "last_available"
@@ -52,6 +54,10 @@ def _ticker(value):
 
 def copycat_trades(events, store, market_end, fallback_days=120):
     rows = []
+    if "period" in events.columns and len(events):
+        # Several 13F periods filed on one day (late catch-up filings): only the latest counts.
+        latest = events.groupby(["fund", "filed"])["period"].transform("max")
+        events = events[events["period"] == latest]
     for fund, g in events.groupby("fund"):
         dates = sorted(g["filed"].unique())
         for i, filed in enumerate(dates):
@@ -86,7 +92,7 @@ def congress_trades(ptr_trades, store, market_end, holds=(30, 90, 180), sale_max
         if len(later):
             rules["until_sale"] = lambda e, d=later["filed"].min(): ("after", d)
         else:
-            rules["until_sale"] = lambda e: ("on_or_after", e + pd.Timedelta(days=sale_max_days))
+            rules["until_sale"] = lambda e, d=limit: ("on_or_after", d)
         for variant, rule in rules.items():
             rows.append({"strategy": "congress", "variant": variant, "source": b.member,
                          "ticker": ticker, "signal_date": b.filed, "weight": 1.0,

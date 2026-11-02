@@ -69,9 +69,58 @@ def test_congress_until_sale_without_sale_uses_max_days():
     t = st.congress_trades(_ptr([("Pelosi", "2020-01-03", "AAA", "buy")]),
                            FakeStore({"AAA": AAA}), END, holds=(), sale_max_days=365)
     u = t[t.variant == "until_sale"].iloc[0]
-    assert u.exit_date == "2021-01-05"   # entry 2020-01-06 + 365 days
+    assert u.exit_date == "2021-01-04"   # filed 2020-01-03 + 365 days = Sat -> Mon
 
 
 def test_congress_empty_input():
     t = st.congress_trades(_ptr([]), FakeStore({}), END)
     assert t.empty and list(t.columns) == st.TRADE_COLUMNS
+
+
+# ---- final review fixes: items 5, 7, 10 ----
+
+def test_live_lag_boundary_open_vs_last_available():
+    end = AAA.index[-1]
+    rule = lambda e: ("on_or_after", e + pd.Timedelta(days=10000))
+    assert st.LIVE_LAG_DAYS == 7
+    live = AAA[AAA.index <= end - pd.Timedelta(days=7)]   # last bar exactly 7 days behind
+    stale = AAA[AAA.index <= end - pd.Timedelta(days=8)]
+    assert live.index[-1] == end - pd.Timedelta(days=7)
+    a = st.price_trade(live, "2020-01-03", rule, end)
+    b = st.price_trade(stale, "2020-01-03", rule, end)
+    assert (a["status"], a["note"]) == ("open", "")
+    assert (b["status"], b["note"]) == ("ok", "last_available")
+
+
+def test_live_lag_boundary_pending_vs_no_price():
+    end = AAA.index[-1]
+    rule = lambda e: ("on_or_after", e)
+    live = AAA[AAA.index <= end - pd.Timedelta(days=7)]
+    stale = AAA[AAA.index <= end - pd.Timedelta(days=8)]
+    sig = live.index[-1].date().isoformat()
+    assert st.price_trade(live, sig, rule, end)["status"] == "pending"
+    sig = stale.index[-1].date().isoformat()
+    assert st.price_trade(stale, sig, rule, end)["status"] == "no_price"
+
+
+def test_copycat_same_filed_date_keeps_latest_period_only():
+    ev = pd.DataFrame([
+        ("F", "2020-01-03", "AAA", 1.0, 1.0, "2019-06-30"),
+        ("F", "2020-01-03", "BBB", 1.0, 1.0, "2019-09-30"),
+    ], columns=["fund", "filed", "ticker", "weight_fund", "weight_equal", "period"])
+    t = st.copycat_trades(ev, FakeStore({"AAA": AAA, "BBB": AAA}), END)
+    assert set(t["ticker"]) == {"BBB"}
+
+
+def test_copycat_without_period_column_keeps_all():
+    ev = _events([("F", "2020-01-03", "AAA", 1.0, 1.0), ("F", "2020-01-03", "BBB", 1.0, 1.0)])
+    t = st.copycat_trades(ev, FakeStore({"AAA": AAA, "BBB": AAA}), END)
+    assert set(t["ticker"]) == {"AAA", "BBB"}
+
+
+def test_congress_until_sale_fallback_anchored_on_filed_date():
+    # a long gap between filing and the next trading day must not stretch the window
+    t = st.congress_trades(_ptr([("Pelosi", "2020-01-03", "AAA", "buy")]),
+                           FakeStore({"AAA": AAA}), END, holds=(), sale_max_days=100)
+    u = t.iloc[0]
+    assert u.exit_date == "2020-04-13"   # 2020-01-03 + 100 days = Sat 04-12 -> Mon 04-13
