@@ -18,14 +18,16 @@
    - `OPENFIGI_API_KEY` (необязательно, помогает найти тикеры по CUSIP).
 3. Actions → backtest → Run workflow. Первый прогон долгий (скачивается вся история), следующие быстрые за счёт кеша.
 
-GitHub отключает расписание в репо без активности 60 дней. Еженедельные коммиты отчёта считаются активностью.
+В публичных репо GitHub отключает расписание после 60 дней без активности. Еженедельные коммиты отчёта считаются активностью.
+
+Если на ветке по умолчанию включена защита (branch protection), пуш бота `github-actions[bot]` будет отклонён: разрешите ему пуш или уберите защиту.
 
 ## Запуск локально
 
 ```bash
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt
-.venv/Scripts/python -m pytest
+.venv/Scripts/python -m pytest -q
 ```
 
 ```bash
@@ -33,7 +35,7 @@ SEC_USER_AGENT="Имя you@example.com" .venv/Scripts/python -m backtest.run
 ```
 
 Для PTR нужен `pdftotext` (poppler). Без него сделки Конгресса не прочитаются и попадут в `reports/errors.log`.
-Повторный расчёт без скачивания: `python -m backtest.run --skip-fetch`.
+Повторный расчёт без скачивания: `.venv/Scripts/python -m backtest.run --skip-fetch`.
 
 ## Настройки
 
