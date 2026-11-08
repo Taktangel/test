@@ -1,0 +1,412 @@
+SEC ticker list: EdgarError: https://www.sec.gov/files/company_tickers.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+SEC ticker list: no saved copy, tickers come from overrides and OpenFIGI only
+13F Berkshire Hathaway Inc: EdgarError: https://data.sec.gov/submissions/CIK0001067983.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Pershing Square Capital Management, L.P.: EdgarError: https://data.sec.gov/submissions/CIK0001336528.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Scion Asset Management, LLC: EdgarError: https://data.sec.gov/submissions/CIK0001649339.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Bridgewater Associates, LP: EdgarError: https://data.sec.gov/submissions/CIK0001350694.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F ARK Investment Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001697748.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Duquesne Family Office LLC: EdgarError: https://data.sec.gov/submissions/CIK0001536411.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Appaloosa LP: EdgarError: https://data.sec.gov/submissions/CIK0001656456.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Baupost Group LLC/MA: EdgarError: https://data.sec.gov/submissions/CIK0001061768.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Third Point LLC: EdgarError: https://data.sec.gov/submissions/CIK0001040273.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Himalaya Capital Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001709323.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Icahn Carl C: EdgarError: https://data.sec.gov/submissions/CIK0000921669.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Soros Fund Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001029160.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Renaissance Technologies LLC: EdgarError: https://data.sec.gov/submissions/CIK0001037389.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Tiger Global Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001167483.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Coatue Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001135730.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Lone Pine Capital LLC: EdgarError: https://data.sec.gov/submissions/CIK0001061165.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Elliott Investment Management L.P.: EdgarError: https://data.sec.gov/submissions/CIK0001791786.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Fundsmith LLP: EdgarError: https://data.sec.gov/submissions/CIK0001569205.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Markel Group Inc.: EdgarError: https://data.sec.gov/submissions/CIK0001096343.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Gates Foundation Trust: EdgarError: https://data.sec.gov/submissions/CIK0001166559.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Dalal Street, LLC: EdgarError: https://data.sec.gov/submissions/CIK0001549575.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Akre Capital Management LLC: EdgarError: https://data.sec.gov/submissions/CIK0001112520.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+13F Oaktree Capital Management LP: EdgarError: https://data.sec.gov/submissions/CIK0000949509.json did not return JSON: 'latin-1' codec can't encode characters in position 0-2: ordinal not in range(256)
+PTR McCaul 9108260: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9108071: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107906: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107756: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107657: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107533: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107305: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107269: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9107166: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9106473: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9106277: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9106161: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9105973: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110400: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110306: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110230: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110126: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110046: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9109903: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9109669: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9109515: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9109038: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9108579: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9108468: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9108384: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112312: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112254: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112202: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112175: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112064: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112020: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9111984: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9111930: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111874: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9111844: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9111820: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111812: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111740: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9111738: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111583: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9111484: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111397: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9111297: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9111257: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9111258: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110846: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9110730: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110684: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9110644: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110560: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9110547: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9110522: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9110470: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9110456: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114397: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114323: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114288: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114252: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114222: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114173: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114153: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114130: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114060: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9113779: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9113772: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9113676: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9113657: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9113580: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9113509: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9113463: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9113462: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9113406: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9113299: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112880: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112814: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112673: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112649: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9112651: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9112650: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112582: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112538: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9112493: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9112457: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9112444: no text (scanned PDF or pdftotext missing)
+PTR Gottheimer 9112308: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8216935: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8216839: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8216805: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8216661: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8216662: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115484: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115485: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115384: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115315: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115234: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115183: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115123: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115083: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115039: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114757: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114649: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114567: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114526: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114492: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114457: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9114418: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114396: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9114372: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217819: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217812: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217799: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217777: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217747: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217740: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217686: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217680: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217659: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217653: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217570: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217557: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217405: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217394: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217329: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217323: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217233: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217213: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217209: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217208: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217166: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217164: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217060: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8216973: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8216965: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8216879: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218519: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218490: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218460: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218426: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218408: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218398: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218376: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218338: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218312: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218261: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218157: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218147: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218113: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218109: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218059: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218031: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217977: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217938: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217912: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217894: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8217869: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8217856: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219340: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219318: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219309: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219288: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219273: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219275: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219244: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219242: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219222: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219207: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219185: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219155: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219090: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219068: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219010: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218940: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218855: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218730: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218645: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218637: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218615: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218597: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218579: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218560: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8218545: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8218518: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220106: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220092: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220078: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220067: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220046: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220039: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220010: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219992: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219971: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219953: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219921: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219876: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219845: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219826: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219799: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219783: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219522: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219521: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219469: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219444: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219432: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219417: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8219384: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8219353: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220723: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220711: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220706: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220691: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220685: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220674: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220661: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220660: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220643: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220626: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220615: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220570: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220551: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220534: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220516: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220451: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220320: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220252: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220214: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220192: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220188: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220173: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220162: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220127: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221302: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221285: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221263: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221264: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221228: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221231: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115684: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115679: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115662: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115677: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115676: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115664: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115671: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221176: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221173: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221124: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221120: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220906: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220904: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220834: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220827: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220783: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8220754: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8220750: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9116378: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9116376: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9116328: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9116267: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9116211: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9116206: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9116141: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9116142: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115822: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115820: no text (scanned PDF or pdftotext missing)
+PTR McCaul 9115728: no text (scanned PDF or pdftotext missing)
+PTR Khanna 9115726: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221359: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221358: no text (scanned PDF or pdftotext missing)
+PTR McCaul 8221326: no text (scanned PDF or pdftotext missing)
+PTR Khanna 8221322: no text (scanned PDF or pdftotext missing)
+prices LHCG: fetch_yahoo returned no data
+prices LHCG: fetch_stooq returned no data
+prices LHCG: no prices
+prices RHT: fetch_yahoo returned no data
+prices RHT: fetch_stooq returned no data
+prices RHT: no prices
+prices IPXL: fetch_yahoo returned no data
+prices IPXL: fetch_stooq returned no data
+prices IPXL: no prices
+prices QTS: fetch_yahoo returned no data
+prices QTS: fetch_stooq returned no data
+prices QTS: no prices
+prices SHPG: fetch_yahoo returned no data
+prices SHPG: fetch_stooq returned no data
+prices SHPG: no prices
+prices SNHY: fetch_yahoo returned no data
+prices SNHY: fetch_stooq returned no data
+prices SNHY: no prices
+prices WPX: fetch_yahoo returned no data
+prices WPX: fetch_stooq returned no data
+prices WPX: no prices
+prices ZEN: fetch_yahoo returned no data
+prices ZEN: fetch_stooq returned no data
+prices ZEN: no prices
+prices CHL: fetch_yahoo returned no data
+prices CHL: fetch_stooq returned no data
+prices CHL: no prices
+prices TUP: fetch_yahoo returned no data
+prices TUP: fetch_stooq returned no data
+prices TUP: no prices
+prices VRTU: fetch_yahoo returned no data
+prices VRTU: fetch_stooq returned no data
+prices VRTU: no prices
+prices EXAS: fetch_yahoo returned no data
+prices EXAS: fetch_stooq returned no data
+prices EXAS: no prices
+prices TWTR: fetch_yahoo returned no data
+prices TWTR: fetch_stooq returned no data
+prices TWTR: no prices
+prices CEQP: fetch_yahoo returned no data
+prices CEQP: fetch_stooq returned no data
+prices CEQP: no prices
+prices CVET: fetch_yahoo returned no data
+prices CVET: fetch_stooq returned no data
+prices CVET: no prices
+prices FLT: fetch_yahoo returned no data
+prices FLT: fetch_stooq returned no data
+prices FLT: no prices
+prices LUKOY: fetch_yahoo returned no data
+prices LUKOY: fetch_stooq returned no data
+prices LUKOY: no prices
+prices SQ: fetch_yahoo returned no data
+prices SQ: fetch_stooq returned no data
+prices SQ: no prices
+prices CCMP: fetch_yahoo returned no data
+prices CCMP: fetch_stooq returned no data
+prices CCMP: no prices
+prices SGEN: fetch_yahoo returned no data
+prices SGEN: fetch_stooq returned no data
+prices SGEN: no prices
+prices PYCR: fetch_yahoo returned no data
+prices PYCR: fetch_stooq returned no data
+prices PYCR: no prices
+prices NS: fetch_yahoo returned no data
+prices NS: fetch_stooq returned no data
+prices NS: no prices
+prices PSXP: fetch_yahoo returned no data
+prices PSXP: fetch_stooq returned no data
+prices PSXP: no prices
+prices ACST: fetch_yahoo returned no data
+prices ACST: fetch_stooq returned no data
+prices ACST: no prices
+prices CREE: fetch_yahoo returned no data
+prices CREE: fetch_stooq returned no data
+prices CREE: no prices
+prices TWKS: fetch_yahoo returned no data
+prices TWKS: fetch_stooq returned no data
+prices TWKS: no prices
+prices SIVB: fetch_yahoo returned no data
+prices SIVB: fetch_stooq returned no data
+prices SIVB: no prices
+prices VBTX: fetch_yahoo returned no data
+prices VBTX: fetch_stooq returned no data
+prices VBTX: no prices
+prices CHX: fetch_yahoo returned no data
+prices CHX: fetch_stooq returned no data
+prices CHX: no prices
+prices ETRN: fetch_yahoo returned no data
+prices ETRN: fetch_stooq returned no data
+prices ETRN: no prices
+prices ITCI: fetch_yahoo returned no data
+prices ITCI: fetch_stooq returned no data
+prices ITCI: no prices
+prices SHYF: fetch_yahoo returned no data
+prices SHYF: fetch_stooq returned no data
+prices SHYF: no prices
+prices GTLS: fetch_yahoo returned no data
+prices GTLS: fetch_stooq returned no data
+prices GTLS: no prices
+prices PPBI: fetch_yahoo returned no data
+prices PPBI: fetch_stooq returned no data
+prices PPBI: no prices
+prices FNA: fetch_yahoo returned no data
+prices FNA: fetch_stooq returned no data
+prices FNA: no prices
+prices SWTX: fetch_yahoo returned no data
+prices SWTX: fetch_stooq returned no data
+prices SWTX: no prices
+prices TPH: fetch_yahoo returned no data
+prices TPH: fetch_stooq returned no data
+prices TPH: no prices
+prices FI: fetch_yahoo returned no data
+prices FI: fetch_stooq returned no data
+prices FI: no prices
+prices THR: fetch_yahoo returned no data
+prices THR: fetch_stooq returned no data
+prices THR: no prices
